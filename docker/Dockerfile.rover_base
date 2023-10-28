@@ -1,0 +1,81 @@
+# Use an appropriate base image (replace with your ROS 2 base image)
+FROM ubuntu:jammy
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV SHELL /bin/bash
+SHELL ["/bin/bash", "-c"]
+
+# setup timezone
+RUN echo 'Etc/UTC' > /etc/timezone && \
+    ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    apt update && \
+    apt install -q -y --no-install-recommends tzdata && \
+    rm -rf /var/lib/apt/lists/*
+
+# install packages
+RUN apt update && apt install -q -y --no-install-recommends \
+    dirmngr \
+    gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# setup sources.list
+RUN echo "deb http://packages.ros.org/ros2/ubuntu jammy main" > /etc/apt/sources.list.d/ros2-latest.list
+
+# setup keys
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
+
+# setup environment
+ENV LANG=C.UTF-8
+ENV LC_ALL=C.UTF-8
+
+ENV ROS_DISTRO=humble
+
+# intsall convinience packages
+RUN apt update && apt install -q -y --no-install-recommends \
+    git \
+    curl \
+    gnupg \
+    software-properties-common \
+    lsb-release \
+    wget \
+    python3-dev \
+    python3-venv \
+    python3-pip \
+    cmake \
+    build-essential \
+    vim \
+    tmux \
+    htop \
+    gh \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installing ROS2 Humble
+# Add the "universe" repository to your system's list of repositories
+RUN add-apt-repository universe -y
+
+# Add ROS repository and keys
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
+
+# Install ROS and development tools
+RUN apt update && apt install -y \
+    ros-humble-ros-base \
+    ros-dev-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# Initialize rosdep
+RUN rosdep init
+
+# Intel Realsense camera
+RUN apt update && apt install -q -y --no-install-recommends \
+    ros-humble-librealsense2* \
+    ros-humble-realsense2-* \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+
+# setup entrypoint
+COPY rover_base_entrypoint.sh /rover_base_entrypoint.sh
+
+ENTRYPOINT ["/rover_base_entrypoint.sh"]
+CMD ["bash"]
