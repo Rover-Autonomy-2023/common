@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Copy over udev rule for realsense camera
+sudo cp realsense-camera.rules /etc/udev/rules.d
+
+# Reload udev rules
+sudo udevadm control --reload
+
 CONTAINER_IMAGE=rover-base:1.0
 # Give docker root user X11 permissions
 sudo xhost +si:localuser:root
