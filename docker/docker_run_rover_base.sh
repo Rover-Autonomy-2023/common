@@ -14,6 +14,6 @@ docker run --privileged -it --network host \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH \
     --device=/dev/realsense_camera \
-    -v /home/jehan/Documents/rover23-24:/root/rover23-24 \
+    -v /home/rover23-24:/root/rover23-24 \
     $USER_VOLUME $CONTAINER_IMAGE $USER_COMMAND 
 
