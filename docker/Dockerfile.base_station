@@ -64,6 +64,9 @@ RUN apt update && apt install -y \
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 
+# Install library to get ds4 data
+RUN python3 -m pip install pyPS4Controller
+
 # setup entrypoint
 COPY base_station_entrypoint.sh /base_station_entrypoint.sh
 
