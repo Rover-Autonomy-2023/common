@@ -6,6 +6,8 @@ sudo cp realsense-camera.rules /etc/udev/rules.d
 # Reload udev rules
 sudo udevadm control --reload
 
+ROVER_DIR="/home/$(logname)/rover23-24"
+
 CONTAINER_IMAGE=rover-base:1.0
 # Give docker root user X11 permissions
 sudo xhost +si:localuser:root
@@ -20,6 +22,6 @@ docker run --privileged -it --network host \
     -v /tmp/.X11-unix/:/tmp/.X11-unix \
     -v $XAUTH:$XAUTH -e XAUTHORITY=$XAUTH \
     --device=/dev/realsense_camera \
-    -v /home/rover23-24:/root/rover23-24 \
+    -v $ROVER_DIR:/root/rover23-24 \
     $USER_VOLUME $CONTAINER_IMAGE $USER_COMMAND 
 

@@ -2,7 +2,6 @@
 
 ROVER_DIR="/home/$(logname)/rover23-24"
 
-
 CONTAINER_IMAGE=base-station:1.0
 # Give docker root user X11 permissions
 sudo xhost +si:localuser:root
