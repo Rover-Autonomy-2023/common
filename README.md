@@ -20,11 +20,14 @@ If you are on a memory-limited platform such as the <8GB, increasing the swap si
 Build the image using our convenience script
 
 ```bash
-TODO
+cd common/docker
+bash docker_build_rover_base.sh
 ```
 
 Run the container 
 
 ```bash
-TODO
+sudo bash docker_run_rover_base.sh
 ```
+
+If you are doing this for the first time, the Intel Realsense camera will have to be unplugged and replugged for the udev rule to take effect. This allows passing the camera to the container in a repeatable manner.
